@@ -10,7 +10,7 @@ export default function Picture({
 }) {
   return (
     <Link
-      to={admin ? `/admin/pictures/${img.id}` : `/picture/${img.id}`}
+      to={admin ? `/admin/pictures/${img.id}` : "#"}
       className="w-full min-h-[160px] p-2 bg-gray-100 hover:bg-gray-200 rounded-xl"
     >
       <div className="w-full bg-gray-200 aspect-square overflow-hidden rounded-t-md">
