@@ -2,7 +2,7 @@
 import { ApiError, ImgType, User } from "@/types/types";
 import { useCallback, useEffect, useState } from "react";
 
-const baseUrl = "http://localhost:8800/api";
+const baseUrl = import.meta.env.VITE_BASE_URL;
 const fetcher = async (
   url: string,
   method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE",
