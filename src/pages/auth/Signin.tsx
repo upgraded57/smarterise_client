@@ -6,7 +6,6 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Link, useNavigate } from "react-router";
 import { useAuth } from "@/hooks/hooks";
 import { Loader2 } from "lucide-react";
@@ -23,6 +22,10 @@ export default function Signin() {
   const socket = useSocket();
 
   const { userSignin, isLoading, error, user, adminSignin } = useAuth();
+  const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setAdmin(event.target.checked);
+  };
+
   const handleSignin = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const data = Object.fromEntries(new FormData(e.target as HTMLFormElement));
@@ -45,9 +48,7 @@ export default function Signin() {
     if (user) {
       persistUser(user);
       toast.success("Sign in successful!", {
-        description: admin
-          ? "Admin sign in successfully"
-          : "User sign in successfully",
+        description: "Welcome. Its good to have you back",
       });
 
       // Generate session id for user
@@ -60,7 +61,9 @@ export default function Signin() {
         sessionId: sessionId,
       };
 
-      socket.emit("userSignin", authUser);
+      if (!admin) {
+        socket.emit("userSignin", authUser);
+      }
 
       if (admin) {
         navigate("/admin");
@@ -90,12 +93,14 @@ export default function Signin() {
                 required
               />
             </label>
-            <label
-              htmlFor="admin"
-              className="flex items-center gap-2 my-4"
-              onClick={() => setAdmin((prev) => !prev)}
-            >
-              <Checkbox id="admin" disabled={isLoading} />
+            <label htmlFor="admin" className="flex items-center gap-2 my-4">
+              <input
+                type="checkbox"
+                id="admin"
+                disabled={isLoading}
+                checked={admin}
+                onChange={handleCheckboxChange}
+              />
               <p className="text-xs font-light">Login as Admin</p>
             </label>
             <Button className="w-full cursor-pointer" disabled={isLoading}>

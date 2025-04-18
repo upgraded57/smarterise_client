@@ -17,7 +17,7 @@ export default function Pictures() {
         {isLoading
           ? [1, 2, 3, 4, 5, 6, 7, 8].map((_, idx) => (
               <Skeleton
-                className="w-full min-w-[200px] aspect-square"
+                className="w-full min-w-[200px] aspect-square mr-4"
                 key={idx}
               />
             ))

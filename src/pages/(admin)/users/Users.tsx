@@ -15,6 +15,7 @@ import moment from "moment";
 
 import { useEffect, useState } from "react";
 import { FaRegDotCircle } from "react-icons/fa";
+import { useNavigate } from "react-router";
 
 interface ActiveUser {
   isOnline: boolean | undefined;
@@ -27,6 +28,7 @@ interface ActiveUser {
 }
 
 export default function Users() {
+  const navigate = useNavigate();
   const { isLoading, users, fetchUsers } = useGetUsers();
   const [onlineUsers, setOnlineUsers] = useState<OnlineUser[] | null>(null);
   const [activeUsers, setActiveUsers] = useState<ActiveUser[] | undefined>(
@@ -71,9 +73,20 @@ export default function Users() {
       <div className="mb-6">
         <h2 className="text-lg">All Users</h2>
         <p className="text-sm font-light">
-          View a live summary of all users. Click on a picture to see their
+          View a live summary of all users. Click on a user to see their
           activity
         </p>
+      </div>
+
+      <div className="flex items-center justify-end gap-10 mb-4">
+        <span className="flex items-center gap-2">
+          <FaRegDotCircle className="text-green-500" />
+          <p className="text-sm">Online Users</p>
+        </span>
+        <span className="flex items-center gap-2">
+          <FaRegDotCircle className="text-red-500" />
+          <p className="text-sm">Offline Users</p>
+        </span>
       </div>
       <Card className="px-4">
         <Table>
@@ -82,7 +95,7 @@ export default function Users() {
               <TableHead />
               <TableHead>Username</TableHead>
               <TableHead>Email</TableHead>
-              <TableHead>Total Views</TableHead>
+              <TableHead>Pictures Viewed</TableHead>
               <TableHead>Last Login</TableHead>
             </TableRow>
           </TableHeader>
@@ -97,7 +110,12 @@ export default function Users() {
               </TableRow>
             ) : (
               activeUsers?.map((user, idx) => (
-                <TableRow key={idx}>
+                <TableRow
+                  key={idx}
+                  onClick={() =>
+                    navigate(`${user.id}/pageviews`, { state: user })
+                  }
+                >
                   <TableCell>
                     <span
                       className={
@@ -119,6 +137,9 @@ export default function Users() {
           </TableBody>
         </Table>
       </Card>
+      <p className="text-xs font-light text-gray-400 mt-6">
+        * Only registered users are viewed
+      </p>
     </>
   );
 }

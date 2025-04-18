@@ -20,7 +20,7 @@ export default function Home() {
   return (
     <>
       {/* Hero */}
-      <div className="w-full h-[400px] flex flex-col gap-10 items-center justify-center px-4 mb-10 rounded-2xl overflow-hidden bg-gray-100 bg-[url(https://images.unsplash.com/photo-1543269664-7eef42226a21?q=80&w=3540&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)]">
+      <div className="w-full h-[400px] flex flex-col gap-10 items-center justify-center px-4 mb-10 rounded-2xl overflow-hidden bg-gray-100 bg-[url(https://images.unsplash.com/photo-1543269664-7eef42226a21?q=80&w=1440&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)]">
         <h1 className="text-3xl font-light text-white text-center text-balance">
           Browse The Best Pictures
         </h1>
@@ -35,7 +35,7 @@ export default function Home() {
         {isLoading
           ? [1, 2, 3, 4, 5, 6, 7, 8].map((_, idx) => (
               <Skeleton
-                className="w-full min-w-[200px] aspect-square"
+                className="w-full min-w-[200px] aspect-square mr-4"
                 key={idx}
               />
             ))

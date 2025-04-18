@@ -61,8 +61,9 @@ export default function UsersLayout() {
 
       {/* Footer */}
       <footer className="w-full py-10 mt-20 border-t-[1px] border-t-gray-300">
-        <div className="w-full max-w-screen-lg mx-auto px-[4vw] lg:px-4">
+        <div className="w-full max-w-screen-lg mx-auto px-[4vw] lg:px-4 flex items-center justify-between">
           <p>Footer</p>
+          <p className="text-sm">Random Text</p>
         </div>
       </footer>
     </UserProvider>

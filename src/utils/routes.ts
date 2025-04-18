@@ -9,6 +9,8 @@ import Users from "@/pages/(admin)/users/Users";
 import Signin from "@/pages/auth/Signin";
 import Signup from "@/pages/auth/Signup";
 import About from "@/pages/(users)/about/About";
+import AdminPicture from "@/pages/(admin)/picture/AdminPicture";
+import PageViews from "@/pages/(admin)/pageViews/PageViews";
 
 export const routes = createBrowserRouter([
   {
@@ -39,8 +41,16 @@ export const routes = createBrowserRouter([
         Component: Pictures,
       },
       {
+        path: "pictures/:pictureId",
+        Component: AdminPicture,
+      },
+      {
         path: "users",
         Component: Users,
+      },
+      {
+        path: "users/:userId/pageviews",
+        Component: PageViews,
       },
     ],
   },

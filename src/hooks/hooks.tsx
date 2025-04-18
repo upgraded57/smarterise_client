@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ApiError, ImgType, User } from "@/types/types";
+import { ApiError, ImgType, PageView, User } from "@/types/types";
 import { useCallback, useEffect, useState } from "react";
 
 const baseUrl = import.meta.env.VITE_BASE_URL;
@@ -235,4 +235,59 @@ export function useGetPagesSummary() {
   }, []);
 
   return { pagesSummary, error };
+}
+
+export function useGetPictureViewers(pictureId: string) {
+  const [viewers, setViewers] = useState<User[] | null>(null);
+  const [error, setError] = useState<ApiError | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  useEffect(() => {
+    const fetchPictureViewers = async () => {
+      setIsLoading(true);
+      try {
+        const res = await fetcher(
+          `${baseUrl}/admin/pictureViewers/${pictureId}`,
+          "GET"
+        );
+        if (res.ok) {
+          const resData = await res.json();
+          setViewers(resData.viewers);
+        }
+      } catch (error: any) {
+        setError(error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchPictureViewers();
+  }, [pictureId]);
+
+  return { viewers, isLoading, error };
+}
+
+export function useGetUserPageViews(userId: string) {
+  const [pages, setPages] = useState<PageView[] | null>(null);
+  const [imgs, setImgs] = useState<ImgType[] | null>(null);
+  const [error, setError] = useState<ApiError | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const fetchUserPageViews = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      const res = await fetcher(`${baseUrl}/admin/pageviews/${userId}`, "GET");
+      if (res.ok) {
+        const resData = await res.json();
+        setPages(resData.views.pages);
+        setImgs(resData.views.pictures);
+      }
+    } catch (error: any) {
+      setError(error);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [userId]);
+  useEffect(() => {
+    fetchUserPageViews();
+  }, [fetchUserPageViews]);
+
+  return { pages, imgs, isLoading, error, fetchUserPageViews };
 }

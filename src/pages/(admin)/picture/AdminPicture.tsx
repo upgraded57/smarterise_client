@@ -1,56 +1,25 @@
-/* eslint-disable react-hooks/rules-of-hooks */
-import { Link, Navigate, useParams } from "react-router";
-import { Skeleton } from "@/components/ui/skeleton";
-import { useFetchSingleImg } from "@/hooks/hooks";
-import { LuCircleUserRound } from "react-icons/lu";
 import { Button } from "@/components/ui/button";
-import { FaArrowRightFromBracket } from "react-icons/fa6";
-import { FaRegEye } from "react-icons/fa";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { useContext, useEffect, useState } from "react";
-import { UserContext } from "@/utils/userContext";
-import useSocket from "@/hooks/socket";
+import { useFetchSingleImg, useGetPictureViewers } from "@/hooks/hooks";
+import { FaRegEye } from "react-icons/fa";
+import { FaArrowRightFromBracket } from "react-icons/fa6";
+import { LuCircleUserRound } from "react-icons/lu";
+import { Link, useParams } from "react-router";
 
-export default function Picture() {
-  const user = useContext(UserContext)?.user;
-  // Start Socket Connection
-  const socket = useSocket();
-  const sessionId = useContext(UserContext)?.sessionId;
-  const [pictureViews, setPictureViews] = useState(0);
+export default function AdminPicture() {
   const { pictureId } = useParams();
-  if (!pictureId) {
-    <Navigate to="/" />;
-    return;
-  }
-  const { img, isLoading } = useFetchSingleImg(pictureId);
 
-  // Update image view count
-  useEffect(() => {
-    if (img) {
-      setPictureViews(img.views);
-    }
-
-    const data = {
-      sessionId,
-      userId: user ? user?.id : "",
-      pictureId,
-      pictureName: img?.name,
-    };
-
-    const handlePictureCountUpdate = () => {
-      setPictureViews((prev) => prev + 1);
-    };
-    socket.emit("pictureView", data);
-    socket.on("pictureCountUpdate", handlePictureCountUpdate);
-    return () => {
-      socket.off("pictureCountUpdate", handlePictureCountUpdate);
-    };
-  }, [pictureId, sessionId, user, socket, img]);
+  const { isLoading, img } = useFetchSingleImg(pictureId!);
+  const { viewers, isLoading: isLoadingPictureViewers } = useGetPictureViewers(
+    pictureId!
+  );
+  console.log(viewers);
 
   return isLoading ? (
     <>
@@ -97,7 +66,7 @@ export default function Picture() {
               <TooltipTrigger>
                 <div className="p-4 bg-white rounded-lg flex items-center gap-4">
                   <FaRegEye className="text-primary text-lg" />
-                  <p className="text-primary">{pictureViews}</p>
+                  <p className="text-primary">{img.views}</p>
                 </div>
               </TooltipTrigger>
               <TooltipContent side="right">
@@ -106,6 +75,31 @@ export default function Picture() {
             </Tooltip>
           </TooltipProvider>
         </div>
+      </div>
+
+      <div className="mt-10">
+        <h2 className="text-lg">Picture Viewers</h2>
+        <div className="flex items-center gap-4 mt-4">
+          {isLoadingPictureViewers ? (
+            [1, 2, 3].map((_) => (
+              <Skeleton
+                className="w-[200px] h-10 rounded-full border-[1px] border-gray-200"
+                key={_}
+              />
+            ))
+          ) : viewers ? (
+            viewers.map((viewer) => (
+              <div className="px-4 h-10 rounded-full border-[1px] border-gray-200 flex items-center justify-center bg-gray-100">
+                <p className="text-sm font-light">{viewer.name}</p>
+              </div>
+            ))
+          ) : (
+            <p className="text-sm">No viewers were found for this picture </p>
+          )}
+        </div>
+        <p className="text-xs font-light text-gray-400 mt-6">
+          * Only views of registered users are collected
+        </p>
       </div>
     </>
   ) : (

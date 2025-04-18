@@ -32,3 +32,12 @@ export interface OnlineUser {
   socketId: string;
   username: string;
 }
+
+export interface PageView {
+  id: string;
+  sessionId: string;
+  userId: string;
+  pictureId: string | null;
+  page: string;
+  viewTime: Date;
+}
