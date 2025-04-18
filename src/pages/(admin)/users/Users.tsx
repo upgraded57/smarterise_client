@@ -10,6 +10,7 @@ import {
 import { useGetUsers } from "@/hooks/hooks";
 import { socket } from "@/hooks/socket";
 import { OnlineUser } from "@/types/types";
+import { Loader2 } from "lucide-react";
 import moment from "moment";
 
 import { useEffect, useState } from "react";
@@ -26,7 +27,7 @@ interface ActiveUser {
 }
 
 export default function Users() {
-  const { users, fetchUsers } = useGetUsers();
+  const { isLoading, users, fetchUsers } = useGetUsers();
   const [onlineUsers, setOnlineUsers] = useState<OnlineUser[] | null>(null);
   const [activeUsers, setActiveUsers] = useState<ActiveUser[] | undefined>(
     undefined
@@ -86,25 +87,35 @@ export default function Users() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {activeUsers?.map((user, idx) => (
-              <TableRow key={idx}>
-                <TableCell>
-                  <span
-                    className={
-                      user.isOnline ? "text-green-500 pulse" : "text-red-500"
-                    }
-                  >
-                    <FaRegDotCircle />
+            {isLoading ? (
+              <TableRow>
+                <TableCell colSpan={5}>
+                  <span className="h-[200px] flex items-center justify-center">
+                    <Loader2 className="animate-spin text-primary" size={40} />
                   </span>
                 </TableCell>
-                <TableCell className="font-medium">{user.name}</TableCell>
-                <TableCell>{user.email}</TableCell>
-                <TableCell>{user.views}</TableCell>
-                <TableCell>
-                  {moment(user.lastSeen).format("DD-MM-YYYY, hh:mm a")}
-                </TableCell>
               </TableRow>
-            ))}
+            ) : (
+              activeUsers?.map((user, idx) => (
+                <TableRow key={idx}>
+                  <TableCell>
+                    <span
+                      className={
+                        user.isOnline ? "text-green-500 pulse" : "text-red-500"
+                      }
+                    >
+                      <FaRegDotCircle />
+                    </span>
+                  </TableCell>
+                  <TableCell className="font-medium">{user.name}</TableCell>
+                  <TableCell>{user.email}</TableCell>
+                  <TableCell>{user.views}</TableCell>
+                  <TableCell>
+                    {moment(user.lastSeen).format("DD-MM-YYYY, hh:mm a")}
+                  </TableCell>
+                </TableRow>
+              ))
+            )}
           </TableBody>
         </Table>
       </Card>

@@ -4,10 +4,11 @@ import UsersChart from "@/components/charts/UsersChart";
 import { Card } from "@/components/ui/card";
 import { useGetAdminSummary } from "@/hooks/hooks";
 import useSocket from "@/hooks/socket";
+import { Loader2 } from "lucide-react";
 import { useEffect } from "react";
 
 export default function Dashboard() {
-  const { summary, setSummary } = useGetAdminSummary();
+  const { isLoading, summary, setSummary } = useGetAdminSummary();
   const socket = useSocket();
 
   useEffect(() => {
@@ -66,6 +67,7 @@ export default function Dashboard() {
             title={item.title}
             count={item.count}
             bgColor={item.bg}
+            isLoading={isLoading}
           />
         ))}
       </div>
@@ -95,17 +97,23 @@ const SummaryCard = ({
   title,
   count,
   bgColor,
+  isLoading,
 }: {
   title: string;
   count: number;
   bgColor: string;
+  isLoading: boolean;
 }) => {
   return (
     <div
       className={`w-full h-[150px] p-4 ${bgColor} text-white rounded-lg flex items-center relative`}
     >
       <p className="absolute top-4 left-4">{title}</p>
-      <h1 className="relative top-4 text-3xl font-bold">{count}</h1>
+      {isLoading ? (
+        <Loader2 className="relative animate-spin top-4" />
+      ) : (
+        <h1 className="relative top-4 text-3xl font-bold">{count}</h1>
+      )}
     </div>
   );
 };

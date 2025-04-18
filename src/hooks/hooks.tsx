@@ -128,6 +128,7 @@ export function useAuth() {
 }
 
 export function useGetAdminSummary() {
+  const [isLoading, setIsLoading] = useState(false);
   const [summary, setSummary] = useState({
     totalUsers: 0,
     onlineUsers: 0,
@@ -136,6 +137,7 @@ export function useGetAdminSummary() {
   });
 
   const fetchSummary = useCallback(async () => {
+    setIsLoading(true);
     try {
       const res = await fetcher(`${baseUrl}/admin/summary`, "GET");
       if (res.ok) {
@@ -149,6 +151,8 @@ export function useGetAdminSummary() {
       }
     } catch (err) {
       console.error("Failed to fetch summary:", err);
+    } finally {
+      setIsLoading(false);
     }
   }, []);
 
@@ -156,7 +160,7 @@ export function useGetAdminSummary() {
     fetchSummary();
   }, [fetchSummary]);
 
-  return { summary, setSummary };
+  return { isLoading, summary, setSummary };
 }
 
 export function useGetAdminPicturesSummary() {
@@ -184,8 +188,10 @@ export function useGetAdminPicturesSummary() {
 export function useGetUsers() {
   const [users, setUsers] = useState<User[] | null>(null);
   const [error, setError] = useState<ApiError | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const fetchUsers = useCallback(async () => {
+    setIsLoading(true);
     try {
       const res = await fetcher(`${baseUrl}/admin/users`, "GET");
       if (res.ok) {
@@ -194,13 +200,15 @@ export function useGetUsers() {
       }
     } catch (error: any) {
       setError(error);
+    } finally {
+      setIsLoading(false);
     }
   }, []);
   useEffect(() => {
     fetchUsers();
   }, [fetchUsers]);
 
-  return { users, error, fetchUsers };
+  return { isLoading, users, error, fetchUsers };
 }
 
 export function useGetPagesSummary() {
