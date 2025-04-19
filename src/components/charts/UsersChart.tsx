@@ -6,9 +6,11 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-import { useGetAdminSummary } from "@/hooks/hooks";
-import { useEffect } from "react";
-import { socket } from "@/hooks/socket";
+
+interface Prop {
+  totalUsers: number;
+  onlineUsers: number;
+}
 
 const chartConfig = {
   qty: {
@@ -24,29 +26,15 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-export default function UsersChart() {
-  const { summary, setSummary } = useGetAdminSummary();
+export default function UsersChart({ totalUsers, onlineUsers }: Prop) {
   const chartData = [
-    { user: "active", qty: summary.onlineUsers, fill: "#33BFF8" },
+    { user: "active", qty: onlineUsers, fill: "#33BFF8" },
     {
       user: "inactive",
-      qty: summary.totalUsers - summary.onlineUsers,
+      qty: totalUsers - onlineUsers,
       fill: "#ABABAB",
     },
   ];
-
-  useEffect(() => {
-    const handleActiveUsers = (data: []) => {
-      setSummary((prev) => ({
-        ...prev,
-        onlineUsers: data.length,
-      }));
-    };
-    socket.on("activeUsers", handleActiveUsers);
-    return () => {
-      socket.off("activeUsers", handleActiveUsers);
-    };
-  }, [setSummary]);
 
   return (
     <div className="flex flex-col items-center justify-center gap-6">
@@ -81,7 +69,7 @@ export default function UsersChart() {
                         y={viewBox.cy}
                         className="fill-foreground text-3xl font-bold"
                       >
-                        {summary.totalUsers}
+                        {totalUsers}
                       </tspan>
                       <tspan
                         x={viewBox.cx}

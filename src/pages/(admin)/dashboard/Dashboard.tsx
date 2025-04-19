@@ -5,10 +5,11 @@ import { Card } from "@/components/ui/card";
 import { useGetAdminSummary } from "@/hooks/hooks";
 import useSocket from "@/hooks/socket";
 import { Loader2 } from "lucide-react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export default function Dashboard() {
   const { isLoading, summary, setSummary } = useGetAdminSummary();
+  const [onlineUsers, setOnlineUsers] = useState(0);
   const socket = useSocket();
 
   useEffect(() => {
@@ -20,10 +21,7 @@ export default function Dashboard() {
     };
 
     const handleActiveUsers = (data: []) => {
-      setSummary((prev) => ({
-        ...prev,
-        onlineUsers: data.length,
-      }));
+      setOnlineUsers(data.length);
     };
 
     socket.on("pictureCountUpdate", handlePictureCountUpdate);
@@ -33,7 +31,7 @@ export default function Dashboard() {
       socket.off("pictureCountUpdate", handlePictureCountUpdate);
       socket.off("activeUsers", handleActiveUsers);
     };
-  }, [socket, setSummary]);
+  }, [socket, setSummary, onlineUsers]);
 
   const cards = [
     {
@@ -43,7 +41,7 @@ export default function Dashboard() {
     },
     {
       title: "Online Users",
-      count: summary.onlineUsers,
+      count: onlineUsers,
       bg: "bg-[#306DC7]",
     },
     {
@@ -82,7 +80,10 @@ export default function Dashboard() {
       <div className="w-full mt-10 flex gap-4">
         <Card className="px-4 flex-2/5">
           <p className="text-sm mb-4">Users</p>
-          <UsersChart />
+          <UsersChart
+            onlineUsers={onlineUsers}
+            totalUsers={summary.totalUsers}
+          />
         </Card>
         <Card className="px-4 flex-3/5">
           <p className="text-sm mb-4">Pages Views</p>

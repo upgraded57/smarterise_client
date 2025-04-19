@@ -131,7 +131,6 @@ export function useGetAdminSummary() {
   const [isLoading, setIsLoading] = useState(false);
   const [summary, setSummary] = useState({
     totalUsers: 0,
-    onlineUsers: 0,
     totalPictures: 0,
     totalPictureViews: 0,
   });
@@ -142,8 +141,7 @@ export function useGetAdminSummary() {
       const res = await fetcher(`${baseUrl}/admin/summary`, "GET");
       if (res.ok) {
         const data = await res.json();
-        setSummary((prev) => ({
-          ...prev,
+        setSummary(() => ({
           totalUsers: data.data.totalUsers,
           totalPictures: data.data.totalPictures,
           totalPictureViews: data.data.totalPictureViews,

@@ -63,14 +63,11 @@ export default function Signin() {
 
       if (!admin) {
         socket.emit("userSignin", authUser);
-      }
-
-      if (admin) {
-        navigate("/admin");
+        navigate("/");
         return;
       }
 
-      navigate("/");
+      navigate("/admin");
     }
   }, [user, navigate, admin, socket]);
   return (
