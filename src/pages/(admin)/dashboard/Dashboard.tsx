@@ -24,12 +24,23 @@ export default function Dashboard() {
       setOnlineUsers(data.length);
     };
 
+    const handleUserOffline = () => {
+      setOnlineUsers((prev) => {
+        if (prev === 0) {
+          return prev;
+        }
+        return prev - 1;
+      });
+    };
+
     socket.on("pictureCountUpdate", handlePictureCountUpdate);
     socket.on("activeUsers", handleActiveUsers);
+    socket.on("userOffline", handleUserOffline);
 
     return () => {
       socket.off("pictureCountUpdate", handlePictureCountUpdate);
       socket.off("activeUsers", handleActiveUsers);
+      socket.off("userOffline", handleUserOffline);
     };
   }, [socket, setSummary, onlineUsers]);
 
